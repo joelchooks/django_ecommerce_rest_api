@@ -11,6 +11,7 @@ def create_collection(api_client):
 
 
 
+@pytest.mark.skip
 @pytest.mark.django_db
 class TestCreateCollection:
     def test_if_user_is_anonymous_returns_401(self, create_collection):
@@ -42,6 +43,7 @@ class TestCreateCollection:
         assert response.data['id'] > 0
 
 
+@pytest.mark.skip
 @pytest.mark.django_db
 class TestRetrieveCollection:
     def test_if_collection_exists_return_200(self, api_client):
