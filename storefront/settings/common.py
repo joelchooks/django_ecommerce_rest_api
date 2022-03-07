@@ -14,24 +14,15 @@ from pathlib import Path
 import os
 from decouple import config
 from datetime import timedelta
-
 import redis
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY')
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -60,6 +51,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     # 'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -104,40 +96,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'storefront.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
-# MySQL ENGINE
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': config('NAME'),
-#         'HOST': 'localhost',
-#         'USER': config('USER'),
-#         'PASSWORD': config('PASSWORD')
-#     }
-# }
-
-# postgreSQL ENGINE
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'storefront3',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': 'localhost',
-        'PORT': 5432,
-    }
-}
-
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'localhost'
-EMAIL_HOST_USER = ''
-EMAIL_HOST_PASSWORD = ''
-EMAIL_PORT = 2525
-DEFAULT_FROM_EMAIL = 'from@chuksbuy.com'
-
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -176,6 +134,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = MEDIA_ROOT
@@ -213,5 +173,46 @@ CELERY_BEAT_SCHEDULE = {
         'task': 'playground.tasks.notify_customers',
         'schedule': 5,
         'args': ['Hello Emeka']
+    }
+}
+
+
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/2",
+        "TIMEOUT": 10* 60,
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler'
+        },
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': 'general.log',
+            'formatter': 'verbose'
+        }
+    },
+    'loggers': {
+        '': {
+            'handlers': ['console', 'file'],
+            'level': os.environ.get('DJANGO_LOG_LEVEL', 'INFO')
+        }
+    },
+    'formatters': {
+        'verbose': {
+            'format': '{asctime} ({levelname}) - {name} - {message}',
+            'style': '{'
+        } 
     }
 }

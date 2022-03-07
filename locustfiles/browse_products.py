@@ -29,7 +29,57 @@ class SiteUser(HttpUser):
             json={'product_id': product_id, 'quantity': 1}
         )
 
+
+    @task
+    def say_hello(self):
+        self.client.get('/playground/hello/') 
+
+
     def on_start(self):
         response = self.client.post('/store/carts/')
         result = response.json()
         self.cart_id = result['id']
+
+
+
+
+    # @task()
+    # def view_product(self):
+    #     # product_id = randint(1,1000)
+    #     self.client.get(
+    #         f'/baby-products/', 
+    #         name='/baby-products'
+    #     )
+    
+    # @task()
+    # def view_product(self):
+    #     # product_id = randint(1,1000)
+    #     self.client.get(
+    #         f'/pregnancy-maternity/', 
+    #         name='/pregnancy-maternity'
+    #     )
+    
+    # @task()
+    # def view_product(self):
+    #     # product_id = randint(1,1000)
+    #     self.client.get(
+    #         f'/baby-gifts-products/', 
+    #         name='/baby-gifts-products'
+    #     )
+
+
+
+
+    # @task(1)
+    # def add_to_cart(self):
+    #     product_id = randint(1,10)
+    #     self.client.post(
+    #         f'/store/carts/{self.cart_id}/items/', 
+    #         name='/store/carts/items', 
+    #         json={'product_id': product_id, 'quantity': 1}
+    #     )
+
+    # def on_start(self):
+    #     response = self.client.post('/carts/')
+    #     result = response.json()
+    #     self.cart_id = result['id']
