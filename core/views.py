@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.core.mail import send_mail, BadHeaderError
+from django.core.mail import send_mail, BadHeaderError, EmailMultiAlternatives
 from django.http import HttpResponse
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm
@@ -10,6 +10,7 @@ from django.db.models.query_utils import Q
 from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes
+from django import template
 from .models import User
 from .forms import NewUserForm
 
@@ -73,21 +74,24 @@ def password_reset_request(request):
 			if associated_users.exists():
 				for user in associated_users:
 					subject = "Password Reset Requested"
-					email_template_name = "core/password/password_reset_email.txt"
+					plaintext = template.loader.get_template('core/password/password_reset_email.txt')
+					htmltemp = template.loader.get_template('core/password/password_reset_email.html')
 					c = {
-					"email":user.email,
-					'domain':'127.0.0.1:8000',
-					'site_name': 'ChuksBuy',
-					"uid": urlsafe_base64_encode(force_bytes(user.pk)),
-					"user": user,
-					'token': default_token_generator.make_token(user),
-					'protocol': 'http',
-					}
-					email = render_to_string(email_template_name, c)
+                        "email":user.email,
+                        'domain':'127.0.0.1:8000',
+                        'site_name': 'ChuksBuy',
+                        "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+                        "user": user,
+                        'token': default_token_generator.make_token(user),
+                        'protocol': 'http',}
 					try:
-						send_mail(subject, email, 'admin@chuksbuy.com' , [user.email], fail_silently=False)
+						text_content = plaintext.render(c)
+						html_content = htmltemp.render(c)
+						msg = EmailMultiAlternatives(subject, text_content, 'Website <admin@example.com>', [user.email], headers = {'Reply-To': 'admin@example.com'})
+						msg.attach_alternative(html_content, "text/html")
+						msg.send()
 					except BadHeaderError:
 						return HttpResponse('Invalid header found.')
 					return redirect ("/password_reset/done/")
 	password_reset_form = PasswordResetForm()
-	return render(request=request, template_name="core/password/password_reset.html", context={"password_reset_form":password_reset_form})
+	return render(request, template_name="core/password/password_reset.html", context={"password_reset_form":password_reset_form})
