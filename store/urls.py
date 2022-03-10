@@ -3,10 +3,12 @@ from django.urls.conf import include
 from rest_framework_nested import routers
 from . import views
 
+app_name='store'
+
 router = routers.DefaultRouter()
 router.register('products', views.ProductViewSet, basename='products')
-router.register('collections', views.CollectionViewSet)
-router.register('carts', views.CartViewSet)
+router.register('collections', views.CollectionViewSet, basename='collections')
+router.register('carts', views.CartViewSet, basename='carts')
 router.register('customers', views.CustomerViewSet)
 router.register('orders', views.OrderViewSet, basename='orders')
 

@@ -266,6 +266,8 @@ $RECYCLE.BIN/
 # Docker
 docker-compose.yml
 Dockerfile
+docker-entrypoint.sh
+wait-for-it.sh
 
 # vscode
 .vscode/

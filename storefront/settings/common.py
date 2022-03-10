@@ -18,6 +18,7 @@ import redis
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
+TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
@@ -39,6 +40,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'silk',
     'djoser',
+    'crispy_forms',
     'debug_toolbar',
     'playground',
     'store',
@@ -47,9 +49,22 @@ INSTALLED_APPS = [
     'core',
 ]
 
+from django.contrib.messages import constants as messages
+
+MESSAGE_TAGS = {
+    messages.DEBUG: 'alert-info',
+    messages.INFO: 'alert-info',
+    messages.SUCCESS: 'alert-success',
+    messages.WARNING: 'alert-warning',
+    messages.ERROR: 'alert-danger',
+}
+
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
-    # 'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -62,6 +77,7 @@ MIDDLEWARE = [
 
 # if DEBUG:
 #     MIDDLEWARE += ['silk.middleware.SilkyMiddleware']
+
 
 INTERNAL_IPS = [
     # ...
@@ -80,7 +96,7 @@ ROOT_URLCONF = 'storefront.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [TEMPLATES_DIR,],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

@@ -17,6 +17,7 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.contrib.auth import views as auth_views
 from django.urls import path, include
 import debug_toolbar
 
@@ -25,11 +26,15 @@ admin.site.index_title = 'Admin'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('core.urls')),
+    path('', include('core.urls'), name='core'),
     path('playground/', include('playground.urls')),
-    path('store/', include('store.urls')),
+    path('store/', include('store.urls'), name='store'),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.jwt')),
+    # path('accounts/', include('django.contrib.auth.urls')),
+    path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='core/password/password_reset_done.html'), name='password_reset_done'),
+    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name="core/password/password_reset_confirm.html"), name='password_reset_confirm'),
+    path('reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='core/password/password_reset_complete.html'), name='password_reset_complete'),      
     path('__debug__/', include(debug_toolbar.urls)),
 ] 
 

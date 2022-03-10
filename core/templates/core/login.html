@@ -1,0 +1,20 @@
+{% extends "core/base.html" %}
+{% load crispy_forms_tags %}   
+
+{% block content %}     
+
+<!--Login--> 
+<div class="my-forms-color">
+    <div class="container py-5">
+
+        <h1>Login</h1>
+        <form method="POST" class='bootstrap4'>
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button class="btn btn-primary" type="submit">Login</button>
+        </form>
+        <p class="text-center">Don't have an account? <a href="{% url 'core:register' %}">Create an account</a> or <a href="{% url 'core:password_reset' %}">Reset Password</a> here.</p>
+    </div>
+</div>
+
+{% endblock %}

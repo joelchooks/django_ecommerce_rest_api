@@ -1,5 +1,6 @@
 body { 
   margin: 0;
+  background-color: #3E3E7A;
 }
 
 .home-page { 
@@ -7,16 +8,32 @@ body {
   justify-content: center;
   align-items: center;
   background-color:#3E3E7A;
-  height: 100vh;
+  height: 90vh;
   width: 100vw;
 }
 
 .logo {
-  width: 550px;
+  width: 600px;
+  height: 90vh;
 }
 
 .thumbnail {
   object-fit: cover;
   width: 100px;
   height: 100px;
+}
+
+.my-nav-color{
+  background-color: #3E3E7A;
+  color: white;
+  border-color: white;
+}
+
+.my-forms-color{
+  background-color:#3E3E7A;
+  color: white;
+}
+
+.not-visible{
+  display: none;
 }
