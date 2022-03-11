@@ -32,9 +32,9 @@ urlpatterns = [
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.jwt')),
     # path('accounts/', include('django.contrib.auth.urls')),
-    path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='core/password/password_reset_done.html'), name='password_reset_done'),
+    path('password_reset/requested/', auth_views.PasswordResetDoneView.as_view(template_name='core/password/password_reset_requested.html'), name='password_reset_requested'),
     path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name="core/password/password_reset_confirm.html"), name='password_reset_confirm'),
-    path('reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='core/password/password_reset_complete.html'), name='password_reset_complete'),      
+    path('password/reset/complete/', auth_views.PasswordResetCompleteView.as_view(template_name='core/password/password_reset_complete.html'), name='password_reset_complete'),      
     path('__debug__/', include(debug_toolbar.urls)),
 ] 
 

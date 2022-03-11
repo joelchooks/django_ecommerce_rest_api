@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django_filters',
     'rest_framework',
     'corsheaders',
+    'widget_tweaks',
     'silk',
     'djoser',
     'crispy_forms',
@@ -89,6 +90,7 @@ INTERNAL_IPS = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8001",
     "http://127.0.0.1:8001",
+    "https://chuksbuy-prod.herokuapp.com"
 ]
 
 ROOT_URLCONF = 'storefront.urls'
@@ -184,13 +186,13 @@ SIMPLE_JWT = {
 
 
 
-CELERY_BEAT_SCHEDULE = {
-    'notify_customers': {
-        'task': 'playground.tasks.notify_customers',
-        'schedule': 5,
-        'args': ['Hello Emeka']
-    }
-}
+# CELERY_BEAT_SCHEDULE = {
+#     'notify_customers': {
+#         'task': 'playground.tasks.notify_customers',
+#         'schedule': 5,
+#         'args': ['Hello Emeka']
+#     }
+# }
 
 
 

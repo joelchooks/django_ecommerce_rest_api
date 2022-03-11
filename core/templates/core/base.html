@@ -1,23 +1,27 @@
 {% load static %}
-{% load crispy_forms_tags %} 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="{% static 'core/favicon.png' %}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="{% static 'core/styles.css' %}">
-    <title>Document</title>
+    <title>ChuksBuy</title>
 </head>
 <body>
     <nav class="navbar navbar-expand-sm navbar-dark my-nav-color">
-        <a class="navbar-brand" href="/store">API ROOT</a>
+        <a class="navbar-brand" href="{% url 'core:index' %}">Home</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
           <ul class="navbar-nav">
+            <li class="nav-item active">
+              <a class="nav-link" href="/store">API ROOT <span class="sr-only">(current)</span></a>
+            </li>
             <li class="nav-item active">
               <a class="nav-link" href="{% url 'store:products-list' %}">Products <span class="sr-only">(current)</span></a>
             </li>
@@ -33,7 +37,8 @@
                   {{user.username|capfirst}}
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                  <a class="dropdown-item" href="#">View Profile</a>
+                  <a class="dropdown-item" href="/auth/jwt/create">Create Token</a>
+                  <a class="dropdown-item" href="/auth/users/me">View Profile</a>
                   <a class="dropdown-item" href="{% url 'core:logout' %}">Sign Out</a>
               {% else %}
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -52,7 +57,7 @@
         </div>
       </nav>
     
-    {% include 'core/messages.html' %}
+    {% include 'core/includes/messages.html' %}
     {% block content %}
     
 

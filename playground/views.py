@@ -7,7 +7,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from templated_mail.mail import BaseEmailMessage
 from rest_framework.views import APIView
-from .tasks import notify_customers
+# from .tasks import notify_customers
 import requests
 import logging
 
@@ -38,13 +38,3 @@ class HelloView(APIView):
     
     # notify_customers.delay('Hello')
 
-    # try:
-    #     message = BaseEmailMessage(
-    #         template_name='emails/hello.html',
-    #         context={'name': 'Emeka'}
-    #     )    
-    #     message.attach_file('playground/static/images/car.jpeg')
-    #     message.send(['admin@chuksbuy.com', 'customer@gmail.com'])
-    # except BadHeaderError:
-    #     pass
-    # return render(request, 'hello.html', {'name': data})

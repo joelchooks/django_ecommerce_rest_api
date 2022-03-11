@@ -17,6 +17,11 @@ body {
   height: 90vh;
 }
 
+.logo-email{
+  width: 6px;
+  height: 9px;
+}
+
 .thumbnail {
   object-fit: cover;
   width: 100px;

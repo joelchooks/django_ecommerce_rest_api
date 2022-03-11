@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -18,14 +19,14 @@
           <!-- BEGIN EMAIL -->
           <tr>
             <td align="center" bgcolor="#ffffff" style="padding:30px">
-              <!-- <img src="/static/core/logo.png" alt="Logo" class="logo-email"> -->
-               <p style="text-align:left">Hello,<br><br> We received a request to reset the password for your account for this email address. To initiate the password reset process for your account, click the link below.
+                <!-- <img src="/static/core/logo.png" alt="Logo" class="logo-email"> -->
+               <p style="text-align:left">Hello,<br><br> We received a request to create an account for this email address. To verify this user, please click the link below.
               </p>
               <p>
-                <a target="_blank" style="text-decoration:none; background-color: black; border: black 1px solid; color: #fff; padding:10px 10px; display:block;" href="{{ protocol }}://{{ domain }}{% url 'password_reset_confirm' uidb64=uid token=token %}">
-                  <strong>Reset Password</strong></a>
+                <a target="_blank" style="text-decoration:none; background-color: black; border: black 1px solid; color: #fff; padding:10px 10px; display:block;" href="{{ protocol }}://{{ domain }}{% url 'core:activate_account' uidb64=uid token=token %}">
+                  <strong>Verify Account</strong></a>
               </p>
-              <p style="text-align:left">This link can only be used once. If you need to reset your password again, please visit <a href="{{ protocol }}://{{domain}}">chuksbuy.herokuapp.com</a> and request another reset.<br><br>If you did not make this request, you can simply ignore this email.</p>
+              <p style="text-align:left">This link can only be used once. If you need to request another verification, please visit <a href="{{ protocol }}://{{domain}}">chuksbuy.herokuapp.com</a>.<br><br>If you did not make this request, you can simply ignore this email.</p>
               <p style="text-align:left">
               Sincerely,<br>The ChuksBuy Team
               </p>
