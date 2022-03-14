@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'django_filters',
     'rest_framework',
     'corsheaders',
-    'widget_tweaks',
     'silk',
     'djoser',
     'crispy_forms',
