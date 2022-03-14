@@ -279,6 +279,4 @@ jwt-access
 # Backup
 backup/
 windows_venv_requirements/
-storefront/
-
 # End of https://www.toptal.com/developers/gitignore/api/windows,python,django,visualstudiocode
