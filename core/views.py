@@ -1,21 +1,17 @@
 from django.shortcuts import render, redirect
-from django.core.mail import send_mail, BadHeaderError, EmailMultiAlternatives, EmailMessage
 from django.http import HttpResponse
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib import messages
 from django.views.generic import ListView
-from django.template.loader import render_to_string
 from django.db.models.query_utils import Q
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.contrib.auth.tokens import default_token_generator
-from django.utils.encoding import force_bytes, force_str
-from django import template
+from django.utils.http import urlsafe_base64_decode
+from django.utils.encoding import force_str
 from django.db import transaction
 from .models import User
 from .forms import NewUserForm
-from .tasks import send_user_email
+from .emails import CustomEmailSending
 from .tokens import account_activation_token
 
 
@@ -33,22 +29,25 @@ def register_request(request):
                 user.is_active = False
                 user.save()
                 current_site = get_current_site(request)
-                subject = 'Activate Your ChuksBuy Account!'
-                plaintext = template.loader.get_template('core/emails/activate_email_text.txt')
-                htmltemp = template.loader.get_template('core/emails/activate_email_text.html')
-                user_email = user.email
-                c = {
-                    "email":form.cleaned_data.get('email'),
-                    'domain':'chuksbuy.herokuapp.com',
-                    'site_name': 'ChuksBuy',
-                    "uid": urlsafe_base64_encode(force_bytes(user.pk)),
-                    "user": user,
-                    'token': account_activation_token.make_token(user),
-                    'protocol': 'http',
-                }
-                text_content = plaintext.render(c)
-                html_content = htmltemp.render(c)
-                send_user_email.delay(subject, user_email, text_content, html_content)
+                email_instance = CustomEmailSending()
+                email_instance.activate_user_email(user)
+
+                # subject = 'Activate Your ChuksBuy Account!'
+                # plaintext = template.loader.get_template('core/emails/activate_email_text.txt')
+                # htmltemp = template.loader.get_template('core/emails/activate_email_text.html')
+                # user_email = user.email
+                # c = {
+                #     "email":form.cleaned_data.get('email'),
+                #     'domain':'chuksbuy-prod.herokuapp.com',
+                #     'site_name': 'ChuksBuy',
+                #     "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+                #     "user": user,
+                #     'token': account_activation_token.make_token(user),
+                #     'protocol': 'http',
+                # }
+                # text_content = plaintext.render(c)
+                # html_content = htmltemp.render(c)
+                # send_user_email.delay(subject, user_email, text_content, html_content)
                 # msg = EmailMultiAlternatives(subject, text_content, 'admin@chuksbuy.herokuapp.com', [user_email], headers = {'Reply-To': 'joelchukks@gmail.com'})
                 # msg.attach_alternative(html_content, "text/html")
                 # msg.send()
@@ -88,11 +87,16 @@ def login_request(request):
             password = form.cleaned_data.get('password')
             user = authenticate(username=username, password=password)
             if user is not None:
-                login(request, user)
-                messages.info(request, f"You are now logged in as {username}.")
-                return redirect("core:index")
+                if not user.is_active: 
+                    email_instance = CustomEmailSending()
+                    email_instance.activate_user_email(user)
+                    messages.info(request,"A new verification mail has been sent to you email address.Please activate your account and try logging in again.")
+                else:
+                    login(request, user)
+                    messages.info(request, f"You are now logged in as {username}.")
+                    return redirect("core:index")
             else:
-                messages.error(request,"Invalid username or password.")
+                messages.error(request,"user with username and password does not exist.")
         else:
             messages.error(request,"Invalid username or password.")
     form = AuthenticationForm()
@@ -114,22 +118,24 @@ def password_reset_request(request):
             associated_users = User.objects.filter(Q(email=data))
             if associated_users.exists():
                 for user in associated_users:
-                    subject = "Password Reset Requested"
-                    plaintext = template.loader.get_template('core/password/password_reset_email.txt')
-                    htmltemp = template.loader.get_template('core/password/password_reset_email.html')
-                    user_email = user.email
-                    c = {
-                        "email":user.email,
-                        'domain':'127.0.0.1:8000',
-                        'site_name': 'ChuksBuy',
-                        "uid": urlsafe_base64_encode(force_bytes(user.pk)),
-                        "user": user,
-                        'token': default_token_generator.make_token(user),
-                        'protocol': 'http',
-                    }
-                    text_content = plaintext.render(c)
-                    html_content = htmltemp.render(c)
-                    send_user_email.delay(subject, user_email, text_content, html_content)
+                    email_instance = CustomEmailSending()
+                    email_instance.user_password_reset(user)
+                    # subject = "Password Reset Requested"
+                    # plaintext = template.loader.get_template('core/password/password_reset_email.txt')
+                    # htmltemp = template.loader.get_template('core/password/password_reset_email.html')
+                    # user_email = user.email
+                    # c = {
+                    #     "email":user.email,
+                    #     'domain':'127.0.0.1:8000',
+                    #     'site_name': 'ChuksBuy',
+                    #     "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+                    #     "user": user,
+                    #     'token': default_token_generator.make_token(user),
+                    #     'protocol': 'http',
+                    # }
+                    # text_content = plaintext.render(c)
+                    # html_content = htmltemp.render(c)
+                    # send_user_email.delay(subject, user_email, text_content, html_content)
                         # msg = EmailMultiAlternatives(subject, text_content, 'admin@chuksbuy.herokuapp.com', [user.email], headers = {'Reply-To': 'joelchukks@gmail.com'})
                         # msg.attach_alternative(html_content, "text/html")
                         # msg.send()
